@@ -31,8 +31,7 @@ class ScheduleController {
         if ($result) {
             $schedule = array(
                 "id" => $this->schedule->id,
-                "title" => $this->schedule->title,
-                "description" => $this->schedule->description,
+                "lab_id" => $this->schedule->lab_id,
                 "start_time" => $this->schedule->start_time,
                 "end_time" => $this->schedule->end_time,
                 "created_at" => $this->schedule->created_at
@@ -47,12 +46,11 @@ class ScheduleController {
     }
 
     public function createSchedule($data) {
-        $query = "INSERT INTO " . $this->table_name . " (title, description, start_time, end_time) VALUES (:title, :description, :start_time, :end_time)";
+        $query = "INSERT INTO " . $this->table_name . " (lab_id, start_time, end_time) VALUES (:title, :start_time, :end_time)";
         $stmt = $this->db->prepare($query);
 
         // Bind parameters
-        $stmt->bindParam(':title', $data['title']);
-        $stmt->bindParam(':description', $data['description']);
+        $stmt->bindParam(':lab_id', $data['lab_id']);
         $stmt->bindParam(':start_time', $data['start_time']);
         $stmt->bindParam(':end_time', $data['end_time']);
 
@@ -66,8 +64,7 @@ class ScheduleController {
 
     public function updateSchedule($id, $data) {
         $this->schedule->id = $id;
-        $this->schedule->title = $data['title'];
-        $this->schedule->description = $data['description'];
+        $this->schedule->lab_id = $data['lab_id'];
         $this->schedule->start_time = $data['start_time'];
         $this->schedule->end_time = $data['end_time'];
 
