@@ -5,7 +5,6 @@ require_once __DIR__ . '/../models/Lab.php';
 class LabController {
     private $db;
     private $lab;
-    private $table_name = "labs"; // Define the table name
 
     public function __construct($db) {
         $this->db = $db;
@@ -26,15 +25,12 @@ class LabController {
     
     public function getLab($id) {
         $this->lab->id = $id;
-        $result = $this->lab->read_single();
-
-        if ($result) {
+        if ($this->lab->read_single()) {
             $lab = array(
                 "id" => $this->lab->id,
                 "name" => $this->lab->name,
                 "location" => $this->lab->location,
-                "capacity" => $this->lab->capacity,
-                "created_at" => $this->lab->created_at
+                "description" => $this->lab->description
             );
 
             header('Content-Type: application/json');
@@ -46,19 +42,16 @@ class LabController {
     }
 
     public function createLab($data) {
-        $query = "INSERT INTO " . $this->table_name . " (name, location, capacity) VALUES (:name, :location, :capacity)";
-        $stmt = $this->db->prepare($query);
+        $this->lab->name = $data['name'];
+        $this->lab->location = $data['location'];
+        $this->lab->description = $data['description'];
 
-        // Bind parameters
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':location', $data['location']);
-        $stmt->bindParam(':capacity', $data['capacity']);
-
-        // Execute query
-        if ($stmt->execute()) {
-            return true;
+        if ($this->lab->create()) {
+            http_response_code(201); // Created
+            echo json_encode(array("message" => "Lab created successfully."));
         } else {
-            return false;
+            http_response_code(503); // Service Unavailable
+            echo json_encode(array("message" => "Unable to create lab."));
         }
     }
 
@@ -66,7 +59,7 @@ class LabController {
         $this->lab->id = $id;
         $this->lab->name = $data['name'];
         $this->lab->location = $data['location'];
-        $this->lab->capacity = $data['capacity'];
+        $this->lab->description = $data['description'];
 
         if ($this->lab->update()) {
             http_response_code(200); // OK

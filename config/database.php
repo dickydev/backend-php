@@ -1,8 +1,8 @@
 <?php
 class Database {
-    private $host = "localhost";
-    private $db_name = "lab_system";
-    private $username = "root";
+    private $host = "";
+    private $db_name = "";
+    private $username = "";
     private $password = "";
     public $conn;
 
